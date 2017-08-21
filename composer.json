@@ -1,0 +1,41 @@
+{
+    "name": "tenolo/image-processor",
+    "description": "Only some basic image classes.",
+    "keywords": [
+        "image",
+        "utilities",
+        "utility",
+        "util",
+        "utils",
+        "tenolo"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "http://tenolo.de",
+    "authors": [
+        {
+            "name": "tenolo - Robert Bernis, Johannes Herberhold GbR",
+            "email": "info@tenolo.de",
+            "homepage": "http://tenolo.de"
+        },
+        {
+            "name": "Nikita Loges",
+            "email": "n.loges@tenolo.de"
+        }
+    ],
+    "require": {
+        "php": "~5.5|~7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tenolo\\ImageProcessor\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master/1.0": "1.0-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
