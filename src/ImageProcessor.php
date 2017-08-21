@@ -1,22 +1,17 @@
 <?php
 
-namespace ImageProcessor;
+namespace Tenolo\ImageProcessor;
 
-use ImageProcessor\Processor\ProcessorInterface;
+use Tenolo\ImageProcessor\Processor\ProcessorInterface;
 
 /**
- * Class ImageWorkshop
- * @package Tenolo\ImageBundle\Workshop
- * @author Nikita Loges
- * @company tenolo GbR
- * @date 22.05.14
+ * Class ImageProcessor
+ *
+ * @package Tenolo\ImageProcessor
+ * @author  Nikita Loges
  */
-class ImageProcessor {
-
-    /**
-     * @var string
-     */
-    protected $source;
+class ImageProcessor
+{
 
     /**
      * @var ProcessorInterface
@@ -24,24 +19,29 @@ class ImageProcessor {
     protected $processor;
 
     /**
-     * @param $source
+     * @param        $source
      * @param string $processor
      *
      * @throws \Exception
      */
-    public function __construct($source, $processor = 'ImageMagick') {
-        $this->source = $source;
+    public function __construct($source, $processor = 'ImageMagick')
+    {
+        $processorClassName = 'Tenolo\ImageProcessor\Processor\\' . $processor;
 
-        $processorClassName = 'ImageProcessor\Processor\\'.$processor;
-
-        if(!class_exists($processorClassName) && !class_exists($processor))
+        if (!class_exists($processorClassName) && !class_exists($processor)) {
             throw new \Exception('class not found');
+        }
+
+        if (class_exists($processor)) {
+            $processorClassName = $processor;
+        }
 
         $ref = new \ReflectionClass($processorClassName);
-        if(!$ref->implementsInterface('\ImageProcessor\Processor\ProcessorInterface'))
+        if (!$ref->implementsInterface(ProcessorInterface::class)) {
             throw new \Exception('processor do not implement ProcessorInterface');
+        }
 
-        $this->processor = new $processorClassName($this->source);
+        $this->processor = new $processorClassName($source);
     }
 
     /**
@@ -50,7 +50,8 @@ class ImageProcessor {
      *
      * @return mixed
      */
-    public function __call($name, $aguments) {
-        return call_user_func_array(array($this->processor, $name), $aguments);
+    public function __call($name, $aguments)
+    {
+        return call_user_func_array([$this->processor, $name], $aguments);
     }
 } 

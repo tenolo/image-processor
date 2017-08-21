@@ -1,18 +1,17 @@
 <?php
 
-namespace ImageProcessor\Processor;
+namespace Tenolo\ImageProcessor\Processor;
 
-use Tenolo\CoreBundle\Util\CryptUtil;
+use Tenolo\Utilities\Utils\CryptUtil;
 
 /**
  * Class ImageMagick
  *
- * @package Tenolo\ImageBundle\Workshop\Processor
- * @author Nikita Loges
- * @company tenolo GbR
- * @date 22.05.14
+ * @package Tenolo\ImageProcessor\Processor
+ * @author  Nikita Loges
  */
-class ImageMagick extends AbstractProcessor {
+class ImageMagick extends AbstractProcessor
+{
 
     /**
      *
@@ -33,7 +32,8 @@ class ImageMagick extends AbstractProcessor {
      *
      * @param  string $source
      */
-    public function __construct($source) {
+    public function __construct($source)
+    {
         $this->source = $source;
         $this->image = $source;
 
@@ -45,8 +45,9 @@ class ImageMagick extends AbstractProcessor {
     /**
      *
      */
-    public function __destruct() {
-        if(is_file($this->tempfile)) {
+    public function __destruct()
+    {
+        if (is_file($this->tempfile)) {
             @unlink($this->tempfile);
         }
     }
@@ -54,41 +55,42 @@ class ImageMagick extends AbstractProcessor {
     /**
      * @{@inheritdoc}
      */
-    public function resize($_width, $_height, $_flip = 0, $_gravity = 'TL') {
+    public function resize($_width, $_height, $_flip = 0, $_gravity = 'TL')
+    {
         #list($width, $height, $flip, $gravity) = parent::resize($_width, $_height, $_flip, $_gravity);
 
-		switch($_gravity) {
-			case 'TL':
-				$gravity = 'NorthWest';
-				break;
-			case 'TM':
-				$gravity = 'North';
-				break;
-			case 'TR':
-				$gravity = 'NorthEast';
-				break;
-			case 'ML':
-				$gravity = 'West';
-				break;
-			case 'MM':
-				$gravity = 'Center';
-				break;
-			case 'MR':
-				$gravity = 'East';
-				break;
-			case 'BL':
-				$gravity = 'SouthWest';
-				break;
-			case 'BM':
-				$gravity = 'South';
-				break;
-			case 'BR':
-				$gravity = 'SouthEast';
-				break;
-			default:
-				$gravity = 'NorthWest';
-				break;
-		}
+        switch ($_gravity) {
+            case 'TL':
+                $gravity = 'NorthWest';
+                break;
+            case 'TM':
+                $gravity = 'North';
+                break;
+            case 'TR':
+                $gravity = 'NorthEast';
+                break;
+            case 'ML':
+                $gravity = 'West';
+                break;
+            case 'MM':
+                $gravity = 'Center';
+                break;
+            case 'MR':
+                $gravity = 'East';
+                break;
+            case 'BL':
+                $gravity = 'SouthWest';
+                break;
+            case 'BM':
+                $gravity = 'South';
+                break;
+            case 'BR':
+                $gravity = 'SouthEast';
+                break;
+            default:
+                $gravity = 'NorthWest';
+                break;
+        }
 
         exec('convert -thumbnail ' . $_width . 'x' . $_height . '^ -gravity ' . $gravity . ' -extent ' . $_width . 'x' . $_height . ' "' . $this->image . '" "' . $this->tempfile . '"');
         $this->switchFileFields();
@@ -97,10 +99,11 @@ class ImageMagick extends AbstractProcessor {
     /**
      * @{@inheritdoc}
      */
-    public function crop($_width, $_height, $_x, $_y, $_gravity = 'TL') {
+    public function crop($_width, $_height, $_x, $_y, $_gravity = 'TL')
+    {
         list($width, $height, $x, $y, $gravity) = parent::crop($_width, $_height, $_x, $_y, $_gravity);
 
-        if(($width != $this->getWidth() || $x == 0) || ($height != $this->getHeight() || $y == 0)) {
+        if (($width != $this->getWidth() || $x == 0) || ($height != $this->getHeight() || $y == 0)) {
             exec('convert "' . $this->image . '" -crop ' . $width . 'x' . $height . '+' . $x . '+' . $y . ' "' . $this->tempfile . '"');
             $this->switchFileFields();
         }
@@ -109,7 +112,8 @@ class ImageMagick extends AbstractProcessor {
     /**
      * @{@inheritdoc}
      */
-    public function rotate($deg) {
+    public function rotate($deg)
+    {
         exec('convert "' . $this->image . '" -rotate ' . $deg . ' "' . $this->tempfile . '"');
         $this->switchFileFields();
     }
@@ -117,7 +121,8 @@ class ImageMagick extends AbstractProcessor {
     /**
      * @{@inheritdoc}
      */
-    public function flip() {
+    public function flip()
+    {
         exec('convert "' . $this->image . '" -flop "' . $this->tempfile . '"');
         $this->switchFileFields();
     }
@@ -125,7 +130,8 @@ class ImageMagick extends AbstractProcessor {
     /**
      * @{@inheritdoc}
      */
-    public function flop() {
+    public function flop()
+    {
         exec('convert "' . $this->image . '" -flip "' . $this->tempfile . '"');
         $this->switchFileFields();
     }
@@ -133,51 +139,57 @@ class ImageMagick extends AbstractProcessor {
     /**
      * @{@inheritdoc}
      */
-    public function getExtension() {
+    public function getExtension()
+    {
         return $this->info['extension'];
     }
 
     /**
      * @{@inheritdoc}
      */
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->info['width'];
     }
 
     /**
      * @{@inheritdoc}
      */
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->info['height'];
     }
 
     /**
      * @return array
      */
-    public function getInfo() {
+    public function getInfo()
+    {
         return $this->info;
     }
 
     /**
      * @{@inheritdoc}
      */
-    public function getImageSize() {
+    public function getImageSize()
+    {
         $size = explode(',', exec('identify -format "%w,%h" "' . $this->image . '"'));
 
-        return array(
-            "width" => $size[0],
+        return [
+            "width"  => $size[0],
             "height" => $size[1]
-        );
+        ];
     }
 
     /**
      * @{@inheritdoc}
      */
-    public function save($dest = null, $quality = 90) {
-        if(empty($dest))
+    public function save($dest = null, $quality = 90)
+    {
+        if (empty($dest))
             $dest = $this->source;
 
-        if(!is_int($quality) || $quality < 0 || $quality > 100)
+        if (!is_int($quality) || $quality < 0 || $quality > 100)
             $quality = 90;
 
         exec('convert "' . $this->image . '" -quality ' . $quality . ' -strip "' . $dest . '"');
@@ -186,7 +198,8 @@ class ImageMagick extends AbstractProcessor {
     /**
      *
      */
-    protected function switchFileFields() {
+    protected function switchFileFields()
+    {
         $this->image = $this->tempfile;
 
         $this->renewInfo();
@@ -195,17 +208,18 @@ class ImageMagick extends AbstractProcessor {
     /**
      *
      */
-    protected function renewInfo() {
+    protected function renewInfo()
+    {
         $info = exec('identify -format "%w,%h,%b,%e,%t" "' . $this->image . '"');
         $info = explode(',', $info);
 
-        $this->info = array(
-            'width' => $info[0],
-            'height' => $info[1],
-            'size' => $info[2],
+        $this->info = [
+            'width'     => $info[0],
+            'height'    => $info[1],
+            'size'      => $info[2],
             'extension' => $info[3],
-            'filename' => $info[4],
-        );
+            'filename'  => $info[4],
+        ];
 
     }
 } 

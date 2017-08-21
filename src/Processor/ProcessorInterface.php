@@ -1,16 +1,15 @@
 <?php
 
-namespace ImageProcessor\Processor;
+namespace Tenolo\ImageProcessor\Processor;
 
 /**
- * Class ProcessorInterface
+ * Interface ProcessorInterface
  *
- * @package Tenolo\ImageBundle\Workshop\Processor
- * @author Nikita Loges
- * @company tenolo GbR
- * @date 22.05.14
+ * @package Tenolo\ImageProcessor\Processor
+ * @author  Nikita Loges
  */
-interface ProcessorInterface {
+interface ProcessorInterface
+{
 
     /**
      * Constructor
@@ -91,7 +90,7 @@ interface ProcessorInterface {
      * Save image to file
      *
      * @param  string|null $dest
-     * @param  int $quality
+     * @param  int         $quality
      */
     public function save($dest = null, $quality = 90);
 } 

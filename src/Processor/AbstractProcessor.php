@@ -1,20 +1,21 @@
 <?php
 
-namespace ImageProcessor\Processor;
+namespace Tenolo\ImageProcessor\Processor;
 
 /**
  * Class AbstractProcessor
- * @package ImageProcessor\Processor
- * @author Nikita Loges
- * @company tenolo GbR
- * @date 23.05.14
+ *
+ * @package Tenolo\ImageProcessor\Processor
+ * @author  Nikita Loges
  */
-abstract class AbstractProcessor implements ProcessorInterface {
+abstract class AbstractProcessor implements ProcessorInterface
+{
 
     /**
      * @{@inheritdoc}
      */
-    public function resize($width, $height, $flip = 0, $gravity = 'TL') {
+    public function resize($width, $height, $flip = 0, $gravity = 'TL')
+    {
 
         // if one size is missing, calcualte it
         if (empty($height)) {
@@ -25,17 +26,17 @@ abstract class AbstractProcessor implements ProcessorInterface {
 
         // ratio of original and thumb image
         $ratioCurrent = $this->getHeight() / $this->getWidth();
-        $ratioNew     = $height / $width;
+        $ratioNew = $height / $width;
 
         // ratio inverse of original and thumb image
         $ratioInverseCurrent = 1 / $ratioCurrent;
-        $ratioInverseNew     = 1 / $ratioNew;
+        $ratioInverseNew = 1 / $ratioNew;
 
         // image has to crop
         if ($ratioCurrent != $ratioNew) {
             if ($width > $height) {
                 $cropHeight = $this->getWidth() * $ratioNew;
-                $cropWidth  = $this->getWidth();
+                $cropWidth = $this->getWidth();
 
                 if ($cropHeight > $this->getHeight()) {
                     $correction = 1 / ($cropHeight / $this->getHeight());
@@ -43,7 +44,7 @@ abstract class AbstractProcessor implements ProcessorInterface {
                     $cropHeight *= $correction;
                 }
             } else {
-                $cropWidth  = $this->getHeight() * $ratioInverseNew;
+                $cropWidth = $this->getHeight() * $ratioInverseNew;
                 $cropHeight = $this->getHeight();
 
                 if ($cropWidth > $this->getWidth()) {
@@ -56,12 +57,12 @@ abstract class AbstractProcessor implements ProcessorInterface {
             $this->crop($cropWidth, $cropHeight, 0, 0, $gravity);
         }
 
-        return array(
+        return [
             $width,
             $height,
             $flip,
             $gravity
-        );
+        ];
     }
 
     /**
@@ -69,23 +70,24 @@ abstract class AbstractProcessor implements ProcessorInterface {
      *
      * @throws \InvalidArgumentException
      */
-    public function crop($width, $height, $x, $y, $gravity = 'TL') {
+    public function crop($width, $height, $x, $y, $gravity = 'TL')
+    {
         if ($width < 1)
-            throw new \InvalidArgumentException('You can\'t use negative $width for "'.__METHOD__.'" method.');
+            throw new \InvalidArgumentException('You can\'t use negative $width for "' . __METHOD__ . '" method.');
 
         if ($height < 1)
-            throw new \InvalidArgumentException('You can\'t use negative $height for "'.__METHOD__.'" method.');
+            throw new \InvalidArgumentException('You can\'t use negative $height for "' . __METHOD__ . '" method.');
 
         if ($x < 0)
-            throw new \InvalidArgumentException('You can\'t use negative $x for "'.__METHOD__.'" method.');
+            throw new \InvalidArgumentException('You can\'t use negative $x for "' . __METHOD__ . '" method.');
 
         if ($y < 0)
-            throw new \InvalidArgumentException('You can\'t use negative $y for "'.__METHOD__.'" method.');
-        
-        if(empty($gravity))
+            throw new \InvalidArgumentException('You can\'t use negative $y for "' . __METHOD__ . '" method.');
+
+        if (empty($gravity))
             $gravity = 'TL';
 
-        switch($gravity) {
+        switch ($gravity) {
             case 'TL':
             case 'TM':
             case 'TR':
@@ -98,11 +100,9 @@ abstract class AbstractProcessor implements ProcessorInterface {
                 // nothing to do
                 break;
             default:
-                throw new \InvalidArgumentException('Invalid gravity for "'.__METHOD__.'" method.');
+                throw new \InvalidArgumentException('Invalid gravity for "' . __METHOD__ . '" method.');
                 break;
         }
-
-
 
         $x = ($x < 0) ? $x * -1 : $x;
         $y = ($y < 0) ? $y * -1 : $y;
@@ -110,7 +110,7 @@ abstract class AbstractProcessor implements ProcessorInterface {
         $currentHeight = $this->getHeight();
 
         if (($width != $currentWidth || $x == 0) || ($height != $currentHeight || $y == 0)) {
-            switch($gravity) {
+            switch ($gravity) {
                 case 'TL':
                     // nothing to do
                     break;
@@ -145,13 +145,13 @@ abstract class AbstractProcessor implements ProcessorInterface {
             }
         }
 
-        return array(
+        return [
             $width,
             $height,
             $x,
             $y,
             $gravity
-        );
+        ];
     }
 
     /**
@@ -159,7 +159,8 @@ abstract class AbstractProcessor implements ProcessorInterface {
      *
      * @return float
      */
-    public function calculateHeightProportional($width) {
+    public function calculateHeightProportional($width)
+    {
         return (int)floor($this->getHeight() * ($width / $this->getWidth()));
     }
 
@@ -168,7 +169,8 @@ abstract class AbstractProcessor implements ProcessorInterface {
      *
      * @return float
      */
-    public function calculateWidthProportional($height) {
+    public function calculateWidthProportional($height)
+    {
         return (int)floor($this->getWidth() * ($height / $this->getHeight()));
     }
 } 
